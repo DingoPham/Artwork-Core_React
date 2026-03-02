@@ -133,7 +133,7 @@ $RECYCLE.BIN/
 _NCrunch*	
 
 # Local settng 
-launchSettings
+appsettings.json
 
 # vs Folder
 .vs
