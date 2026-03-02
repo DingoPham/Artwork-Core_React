@@ -1,0 +1,6 @@
+@Artwork_Core_HostAddress = http://localhost:5151
+
+GET {{Artwork_Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
