@@ -4,11 +4,11 @@ using System.Data;
 
 namespace Artwork_Core.Data
 {
-    public class PostgresSqlConnection : IPostgresSqlConnection
+    public class PostgressSQLConnection : IPostgresSqlConnection
     {
         private readonly string _connectionString;
 
-        public PostgresSqlConnection(IConfiguration configuration)
+        public PostgressSQLConnection(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
