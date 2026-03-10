@@ -2,6 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src/Artwork Core
 
+RUN dotnet publish "./Artwork Core/Artwork_Core.csproj" -c Release -o /app/publish
+
 COPY . .
 
 RUN dotnet restore
