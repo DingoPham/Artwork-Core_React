@@ -2,8 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src/Artwork Core
 
-RUN dotnet publish "./Artwork Core/Artwork Core.csproj" -c Release -o /app/publish
-
 COPY . .
 
 RUN dotnet restore
@@ -18,4 +16,4 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-ENTRYPOINT ["dotnet", "Artwork_Core.dll"]
+ENTRYPOINT ["dotnet", "Artwork Core.dll"]
