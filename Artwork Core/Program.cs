@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReact",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "https://artwork-site-react.onrender.com/")
+            policy.WithOrigins("http://localhost:3000", "https://artwork-site-react.onrender.com")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -41,5 +41,12 @@ app.UseStaticFiles();
 
 app.MapControllers();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Run($"http://0.0.0.0:{port}");
+if (app.Environment.IsDevelopment())
+{
+    app.Run();
+}
+else
+{
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Run($"http://0.0.0.0:{port}");
+}

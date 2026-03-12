@@ -30,9 +30,9 @@ namespace Artwork_Core.Services
             _publicUrl = config["R2:PublicUrl"];
         }
 
-        public async Task<string> Upload(IFormFile file)
+        public async Task<string> UploadIllustration(IFormFile file)
         {
-            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var fileName = $"illustration/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
             using var memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
@@ -51,6 +51,49 @@ namespace Artwork_Core.Services
             await _s3.PutObjectAsync(request);
 
             return $"{_publicUrl}/{fileName}";
+        }
+
+        public async Task<string> UploadAnimation(IFormFile file)
+        {
+            var fileName = $"animation/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            var request = new PutObjectRequest
+            {
+                BucketName = _bucket,
+                Key = fileName,
+                InputStream = memoryStream,
+                ContentType = file.ContentType,
+                DisablePayloadSigning = true,
+                UseChunkEncoding = false
+            };
+
+            await _s3.PutObjectAsync(request);
+
+            Console.WriteLine($"Uploaded video to R2: {fileName}");
+
+            return $"{_publicUrl}/{fileName}";
+        }
+
+        public async Task Delete(string fileUrl)
+        {
+            var key = fileUrl.Replace(_publicUrl + "/", "");
+
+            Console.WriteLine($"Deleting URL: {fileUrl}");
+            Console.WriteLine($"Deleting key: {key}");
+
+            var request = new DeleteObjectRequest
+            {
+                BucketName = _bucket,
+                Key = key
+            };
+
+            await _s3.DeleteObjectAsync(request);
+
+            Console.WriteLine($"Deleted file from R2: {key}");
         }
     }
 }
