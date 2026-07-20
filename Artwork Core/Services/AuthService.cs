@@ -22,20 +22,19 @@ public class AuthService : IAuthService
 
     public async Task<IActionResult> Login(HttpContext context, LoginRequest request)
     {
-        throw new NotImplementedException();
         using var conn = _connection.CreateConnection();
 
         await conn.OpenAsync();
 
-        using var conn = _connection.CreateConnection();
-
-        await conn.OpenAsync();
+        const string sql = @"
+        SELECT id, username, password_hash, role
+        FROM users
+        WHERE username = @username";
 
         using var cmd = new NpgsqlCommand(sql, conn);
 
-        cmd.Parameters.AddWithValue(
-            "@username",
-            request.Username);
+        cmd.Parameters.AddWithValue("@username", request.Username);
+
         using var reader = await cmd.ExecuteReaderAsync();
 
         if (!await reader.ReadAsync())
@@ -44,27 +43,23 @@ public class AuthService : IAuthService
         }
 
         var id = reader.GetInt32(0);
-
         var username = reader.GetString(1);
-
         var passwordHash = reader.GetString(2);
+
+        // Kiểm tra mật khẩu bằng BCrypt
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, passwordHash))
+        {
+            return new UnauthorizedObjectResult("Sai tài khoản hoặc mật khẩu.");
+        }
 
         var role = reader.GetString(3);
 
         var claims = new List<Claim>
-{
-    new Claim(
-        ClaimTypes.Name,
-        username),
-
-    new Claim(
-        ClaimTypes.Role,
-        role),
-
-    new Claim(
-        ClaimTypes.NameIdentifier,
-        id.ToString())
-};
+    {
+        new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+        new Claim(ClaimTypes.Name, username),
+        new Claim(ClaimTypes.Role, role)
+    };
 
         var identity = new ClaimsIdentity(
             claims,
@@ -73,16 +68,16 @@ public class AuthService : IAuthService
         var principal = new ClaimsPrincipal(identity);
 
         await context.SignInAsync(
-CookieAuthenticationDefaults.AuthenticationScheme,
-principal);
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            principal);
 
         return new OkObjectResult(new
         {
+            Message = "Đăng nhập thành công",
             Username = username,
             Role = role
         });
     }
-
     public async Task<IActionResult> Logout(HttpContext context)
     {
         await context.SignOutAsync(
@@ -97,6 +92,16 @@ principal);
         {
             return new UnauthorizedResult();
         }
+        var username = context.User.Identity!.Name;
+
+        var role = context.User.FindFirst(
+            ClaimTypes.Role)?.Value;
+
+        return new OkObjectResult(new
+        {
+            Username = username,
+            Role = role
+        });
     }
 
 }
