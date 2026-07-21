@@ -15,6 +15,11 @@ public class AuthController : ControllerBase
         _service = service;
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    {
+        return await _service.Register(request);
+    }
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -33,5 +38,22 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Me()
     {
         return await _service.Me(HttpContext);
+    }
+
+    [Authorize]
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+    {
+        return await _service.UpdateProfile(HttpContext, request);
+    }
+
+    [Authorize]
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword(
+    [FromBody] ChangePasswordRequest request)
+    {
+        return await _service.ChangePassword(
+            HttpContext,
+            request);
     }
 }
