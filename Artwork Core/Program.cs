@@ -3,11 +3,7 @@ using Artwork_Core.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -15,7 +11,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReact",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "https://artwork-site-react.onrender.com")
+            policy.WithOrigins("http://localhost:3000", "https://artwork-site-8eth.onrender.com")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -38,9 +34,9 @@ builder.Services
         options.Cookie.HttpOnly = true;
 
         // options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.SameSite = SameSiteMode.None;
     });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,7 +44,6 @@ builder.Services.AddScoped<R2Service>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
