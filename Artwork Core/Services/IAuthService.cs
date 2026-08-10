@@ -12,5 +12,7 @@ namespace Artwork_Core.Services
         Task<IActionResult> Me(HttpContext context);
         Task<IActionResult> UpdateProfile(HttpContext context, UpdateProfileRequest request);
         Task<IActionResult> ChangePassword(HttpContext context, ChangePasswordRequest request);
+        Task<IActionResult> ForgotPassword(ForgotPasswordRequest request);
+        Task<IActionResult> ResetPassword(ResetPasswordRequest request);
     }
 }

@@ -1,0 +1,6 @@
+﻿namespace Artwork_Core.Models;
+
+public class ForgotPasswordRequest
+{
+    public string Email { get; set; } = string.Empty;
+}

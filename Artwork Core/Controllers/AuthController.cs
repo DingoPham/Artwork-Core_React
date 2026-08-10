@@ -16,14 +16,33 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterRequest request)
     {
         return await _service.Register(request);
     }
+
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequest request)
     {
-        return await _service.Login(HttpContext, request);
+        return await _service.Login(
+            HttpContext,
+            request);
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(
+        [FromBody] ForgotPasswordRequest request)
+    {
+        return await _service.ForgotPassword(request);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(
+        [FromBody] ResetPasswordRequest request)
+    {
+        return await _service.ResetPassword(request);
     }
 
     [Authorize]
@@ -42,15 +61,18 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPut("profile")]
-    public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+    public async Task<IActionResult> UpdateProfile(
+        UpdateProfileRequest request)
     {
-        return await _service.UpdateProfile(HttpContext, request);
+        return await _service.UpdateProfile(
+            HttpContext,
+            request);
     }
 
     [Authorize]
     [HttpPut("change-password")]
     public async Task<IActionResult> ChangePassword(
-    [FromBody] ChangePasswordRequest request)
+        [FromBody] ChangePasswordRequest request)
     {
         return await _service.ChangePassword(
             HttpContext,

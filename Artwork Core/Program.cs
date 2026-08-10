@@ -40,6 +40,7 @@ builder.Services
     });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<R2Service>();
 
 var app = builder.Build();
